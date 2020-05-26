@@ -6,3 +6,12 @@ for f in fruits:
     else:
         d[f] = 1
 print(d)
+
+responses = ["Like", "Wow", "Love", "Like", "Haha", "Wow", "Sad"]
+result = {"Like": 0, "Love": 0, "Haha": 0, "Wow": 0, "Sad": 0, "Angry": 0}
+for response in responses:
+    if response in result:
+        result[response] = result[response] + 1
+    else:
+        result[response] = 1
+print(result)
