@@ -23,3 +23,11 @@ print(a.index("world"))
 print("hello" in a) # parameter가 list 내 있는지 True of False로 print
 if "hello" in a:
     print("list a에 hello가 있어요!")
+
+# tuple
+x = (1, 2, 3)
+y = ('a', 'b', 'c')
+z = (1, "hello", "there")
+
+# list vs tuple 차이?
+# mutable (가변) vs immutable (불변)
