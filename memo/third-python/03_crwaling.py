@@ -10,3 +10,7 @@ data = requests.get('https://movie.naver.com/movie/sdb/rank/rmovie.nhn?sel=pnt&d
 # 이제 코딩을 통해 필요한 부분을 추출하면 된다.
 soup = BeautifulSoup(data.text, 'html.parser')
 
+# select를 이용해서, tr들을 불러오기
+movies = soup.select('.box_type_1.mb_8 > ul > li > a')
+print(len(movies))
+print(movies[0].text)
