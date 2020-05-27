@@ -8,3 +8,6 @@ db = client.dbsparta                      # 'dbsparta'라는 이름의 db를 만
 db.users.insert_one({'name':'bobby','age':21})
 db.users.insert_one({'name':'kay','age':27})
 db.users.insert_one({'name':'john','age':30})
+
+# DB가 하는 일들
+# C, R, U, D = Create, Read, Update, Delete
