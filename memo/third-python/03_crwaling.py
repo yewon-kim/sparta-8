@@ -10,9 +10,11 @@ soup = BeautifulSoup(data.text, 'html.parser')
 
 # select를 이용해서, tr들을 불러오기
 movies = soup.select('#old_content > table > tbody > tr')
+
 for movie in movies:
-    if movie.select_one('td.title > div > a') != None:
-        print(movie.select_one('td.title > div > a').text)
+    m = movie.select_one
+    if m('td.title > div > a') != None:
+        print(m('.ac > img')['alt'], m('td.title > div > a').text, m('.point').text)
 
 # # movies (tr들) 의 반복문을 돌리기
 # for movie in movies:
