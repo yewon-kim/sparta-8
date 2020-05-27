@@ -25,17 +25,36 @@
     <h2>Parameter & Argument</h2>
     <script>
         function onePlusOne() {
-            document.write(1 + 1 + '<br> ');
+            document.write((1 + 1) + '<br>');
         }
         onePlusOne();
 
         function sum(x, y) {
-            document.write(x + y + '<br> ')
+            document.write((x + y) + '<br>')
         }
         sum(2, 3);
-        sum(12, 34);
+
+        function sumBold(x, y) {
+            document.write(
+                `<div style="font-weight: bold;">
+                    ${x + y}
+                </div><br>`
+            )
+        }
+        sumBold(12, 34);
     </script>
     <h2>Return</h2>
+    <script>
+        function sum2(x, y) {
+            return x + y;
+        }
+        document.write(sum2(2, 3));
+        document.write(
+            `<div style="color: red;">
+                ${sum2(4, 5)}
+            </div><br>`
+        );
+    </script>
 </body>
 
 </html>
