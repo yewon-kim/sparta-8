@@ -17,7 +17,7 @@ for user in all_users:      # 반복문을 돌며 모든 결과값을 보기
 for user in all_users:
     print(user['name'])
 
-user = db.users.find_one({'name':'bobby'})
+user = db.users.find_one({'name':'bobby'}) # 가장 앞서 등록된 data를 찾음
 print(user)
 
 # 그 중 특정 키 값을 빼고 보기
