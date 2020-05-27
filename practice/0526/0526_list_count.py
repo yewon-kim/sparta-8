@@ -15,3 +15,12 @@ for response in responses:
     else:
         result[response] = 1
 print(result)
+
+courses = ["English", "Korean", "English", "Math", "Korean"]
+likes = {}
+for course in courses:
+    if course in likes:
+        likes[course] = likes[course] + 1
+    else:
+        likes[course] = 1
+print(likes)
