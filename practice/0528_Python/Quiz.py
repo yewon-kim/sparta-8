@@ -27,5 +27,15 @@ def password(url):
     domain = url.split(".")[1]
     print(domain[:3] + str(len(domain)) + str(domain.count("e")) + "!")
 
-password("http://www.naver.com/")
-password("https://www.youtube.com/")
+password('http://www.naver.com/')
+password('https://www.youtube.com/')
+
+# 05. 1, 2, 3... 20번 중 1명은 치킨, 3명은 커피 쿠폰에 당첨시키는 함수.
+from random import *
+users = list(range(1, 21))
+shuffle(users)
+winners = sample(users, 4)
+print("=== 당첨자 발표 ===")
+print("CHICKEN: {0}".format(winners[0]))
+print("COFFEE: {0}".format(winners[1:4]))
+print("=== 축하합니다! ===")
