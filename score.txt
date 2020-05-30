@@ -1,0 +1,4 @@
+Math: 80
+English: 50
+Science: 75
+Programming: 100
