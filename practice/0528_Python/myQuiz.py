@@ -20,7 +20,7 @@ def exam_while(question, answer):
     while reply != answer:
         reply = input(question)
         if reply == answer:
-            print("당신은 훌륭한 아재입니다.")
+            print("좋습니다. 한 문제 더!")
         elif reply == "hint":
             print("hint: 대학이 3월에 무엇을 하는지 생각해 보세요.")
         else:
@@ -50,3 +50,19 @@ quiz(
     "hint: 돌은 영어로 '락(Rock)'입니다. 그럼 잔치는?.",
     "다시 생각해 보세요."
 )
+
+# 매진될 때까지 주문 가능한 함수
+def stock(item):
+    print("재고: {0}".format(item))
+    while item != 0:
+        sold = int(input("주문 수량: "))
+        if item > sold:
+            item = item - sold
+            print("재고: {0}".format(item))
+        elif item < sold:
+            print("주문 수량이 재고를 초과했습니다. 다시 입력해 주세요.")
+            print("재고: {0}".format(item))
+        else:
+            print("매진되었습니다.")
+            return
+stock(100)
