@@ -1,7 +1,9 @@
+# return 값이 없는 함수
 def open_account():
     print("새로운 계좌가 생성되었습니다.")
 open_account()
 
+# return 값이 있는 함수
 def deposit(balance, money): # 입금
     print("입금 완료 | 잔액: {0}원".format(balance + money))
     return balance + money
