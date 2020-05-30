@@ -30,3 +30,23 @@ exam_while(
     "대학생들이 3월에 강한 이유는? ",
     "개강해서"
 )
+
+# 04. 문제 계속 내는 함수 응용
+def quiz(question, answer, right, hint, wrong):
+    reply = ""
+    while reply != answer:
+        reply = input(question)
+        if reply == answer:
+            print(right)
+        elif reply == "hint":
+            print(hint)
+        else:
+            print(wrong)
+
+quiz(
+    "돌잔치를 영어로 하면?(5글자) ",
+    "락페스티벌",
+    "당신은 훌륭한 아재입니다.",
+    "hint: 돌은 영어로 '락(Rock)'입니다. 그럼 잔치는?.",
+    "다시 생각해 보세요."
+)
