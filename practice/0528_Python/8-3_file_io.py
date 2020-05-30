@@ -27,3 +27,20 @@ score_file = open("score.txt", "r", encoding="utf8")
 print(score_file.readline(), end="")
 print(score_file.readline(), end="")
 score_file.close()
+
+# readline()을 사용하여 전체 읽기
+score_file = open("score.txt", "r", encoding="utf8")
+while True:
+    line = score_file.readline()
+    if not line:
+        break
+    print(line, end="")
+score_file.close()
+
+# readlines()를 사용하여 전체 읽기
+# readlines() : 각 줄을 한 줄씩 분리하여 list로 저장
+score_file = open("score.txt", "r", encoding="utf8")
+lines = score_file.readlines()
+for line in lines:
+    print(line, end="")
+score_file.close()
