@@ -50,3 +50,17 @@ def passenger_list(n):
     print("총 탑승객 수:", count)
 
 passenger_list(10)
+
+# 07. 성별과 키를 입력하면 표준체중을 구해주는 함수
+def weight():
+    gender = input("성별(male/female): ")
+    height = float(input("키(m): "))
+    if gender == "male":
+        weight = height ** 2 * 22
+        print("표준체중: ", weight, "kg")
+    elif gender == "female":
+        weight = height ** 2 * 21
+        print("표준체중: ", weight, "kg")
+    return weight
+
+weight()
