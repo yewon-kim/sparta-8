@@ -51,7 +51,7 @@ quiz(
     "다시 생각해 보세요."
 )
 
-# 매진될 때까지 주문 가능한 함수
+# 05. 매진될 때까지 주문 가능한 함수
 def stock(item):
     print("재고: {0}".format(item))
     while item != 0:
