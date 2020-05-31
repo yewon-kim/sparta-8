@@ -64,3 +64,11 @@ def weight():
     return weight
 
 weight()
+
+# 08. 1~3주차 보고서 파일을 만드는 프로그램
+for i in range(1, 4):
+    with open(str(i) + "주차.txt", "w", encoding="utf8") as report_file:
+        report_file.write("- {0}주차 주간보고 -\n".format(i))
+        report_file.write("부서: \n")
+        report_file.write("이름: \n")
+        report_file.write("업무 요약: \n")

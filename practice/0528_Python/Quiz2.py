@@ -33,3 +33,17 @@ raffle(6)
 def show(n):
     print("당첨:", randint(1, n))
 show(21)
+
+# 06. 승객 n명의 소요시간이 5~15분일 경우에만 태울 경우 총 탑승객 수를 구하는 함수 (05/29)
+def count(n):
+    count = 0
+    for i in range(1, n + 1):
+        time = randrange(1, 31)
+        if 5 <= time <= 15:
+            print("[O] {0}번 승객 (소요시간: {1}분)".format(i, time))
+            count += 1
+        else:
+            print("[ ] {0}번 승객 (소요시간: {1}분)".format(i, time))
+    print("총 탑승객 수는 ", count, "명입니다.", sep="")
+    return count
+count(10)
