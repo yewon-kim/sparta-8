@@ -1,3 +1,4 @@
+경로 @app.route('/list')
 GETTING DATA
 1. client to api
 	$.ajax GET
@@ -6,6 +7,7 @@ GETTING DATA
 3. api client
 	return articles
 
+경로 @app.route('/create')
 POSTING DATA
 1. client to api
 	$.ajax POST
