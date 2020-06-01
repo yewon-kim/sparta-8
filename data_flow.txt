@@ -1,0 +1,13 @@
+GETTING DATA
+1. client to api
+	$.ajax GET
+2. Flask to db
+	articles - db.articles.find()
+3. api client
+	return articles
+
+POSTING DATA
+1. client to api
+	$.ajax POST
+2. db
+	db.articles.insert_one()
