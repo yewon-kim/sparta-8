@@ -24,13 +24,15 @@ def write_review():
         "author": author,
         "review": review
     })
+
 	# 3. 성공 여부 & 성공 메시지 반환하기
     return jsonify({'result':'success', 'msg': '리뷰가 성공적으로 작성되었습니다.'})
 
 
 @app.route('/reviews', methods=['GET'])
 def read_reviews():
-    return jsonify({'result':'success', 'msg': '이 요청은 GET!'})
+    reviews = list(db.reviews.find({}, {"_id": False}))
+    return jsonify({'result':'success', 'reviews': reviews})
 
 
 if __name__ == '__main__':
