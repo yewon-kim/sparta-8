@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>░ Sparta 4주차 과제 ░</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Nanum+Myeongjo&display=swap"
+        rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            showExchange();
+            listing();
+        })
+
+        function isPhone(p) {
+            var regExp = /[01](0|1|6|7|8|9)[-](\d{3}|\d{4})[-]\d{4}$/;
+            return regExp.test(p);
+        }
+
+        function submit() {
+            let name = $('#inputName').val();
+            let count = $('#selectCount').val();
+            let address = $('#inputAddress').val();
+            let phone = $('#inputPhone').val();
+
+            if (name == '') {
+                alert('이름을 입력하세요!');
+                $('#inputName').focus();
+                return;
+            } else if (count == '') {
+                alert('수량을 선택하세요!');
+                $('#selectCount').focus();
+                return;
+            } else if (address == '') {
+                alert('주소를 입력하세요!');
+                $('#inputAddress').focus();
+                return;
+            } else if (phone == '') {
+                alert('전화번호를 입력하세요!');
+                $('#inputPhone').focus();
+                return;
+            } else if (!isPhone(phone)) {
+                alert('올바른 전화번호가 아닙니다. \n010-0000-0000 형식으로 입력해 주세요!');
+                $('#inputPhone').focus();
+                return;
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/orders",
+                    data: {
+                        name_give: name,
+                        count_give: count,
+                        address_give: address,
+                        phone_give: phone
+                    },
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            alert(response['msg']);
+                            window.location.reload();
+                        }
+                    }
+                })
+            }
+        }
+
+        function listing() {
+            $.ajax({
+                type: "GET",
+                url: "/orders",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let orders = response['orders'];
+                        for (let i = 0; i < orders.length; i++) {
+                            let temp_html = `<tr>
+                                    <td>${orders[i]['name']}</td>
+                                    <td>${orders[i]['count']}</td>
+                                    <td>${orders[i]['address']}</td>
+                                    <td>${orders[i]['phone']}</td>
+                                </tr>`;
+                            $('#orders-box').append(temp_html);
+                        }
+                    } else {
+                        alert('리뷰를 받아오지 못했습니다');
+                    }
+                }
+            })
+        }
+
+        function make_card(name, count, address, phone) {
+
+        }
+
+        function showExchange() {
+            $.ajax({
+                type: "GET",
+                url: "https://api.manana.kr/exchange/rate.json",
+                data: {},
+                success: function (response) {
+                    for (let i = 0; i < response.length; i++) {
+                        let date = response[i]['date'];
+                        let name = response[i]['name'];
+                        let rate = response[i]['rate'];
+                        if (name == 'USDKRW=X') {
+                            $('#exchangeRate').text(`${rate} 원`);
+                            $('#exchangeDate').text(`기준시각: ${date}`);
+                            return;
+                        }
+                    }
+                }
+            })
+        }
+    </script>
+
+    <style type="text/css">
+        * {
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        .wrapper {
+            width: 600px;
+            margin: 0 auto;
+        }
+
+        .image {
+            max-width: 100%;
+            margin: 0 0 30px 0;
+            border-radius: 50px 20px;
+            padding: 10px;
+            box-shadow: 0 0 30px pink;
+            text-align: center;
+        }
+
+        .image img {
+            border-radius: 50px 20px;
+        }
+
+        .title h1,
+        .title h3,
+        .title h4 {
+            display: inline;
+            font-family: 'Nanum Myeongjo', serif;
+        }
+
+        .title h3,
+        .title h4 {
+            color: crimson;
+            text-shadow: 0 0 3px crimson
+        }
+
+        .exchange {
+            margin-top: 5px;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        #exchangeRate {
+            color: crimson;
+        }
+
+        #exchangeDate {
+            font-size: small;
+            font-weight: normal;
+        }
+
+        .contents {
+            width: 100%;
+            margin: 20px auto;
+        }
+
+        .input-group-text {
+            background-color: white;
+            font-weight: bold;
+            color: crimson;
+        }
+
+        .form-control,
+        .custom-select {
+            background-color: rgb(255, 235, 235);
+        }
+
+        .buyBtn {
+            text-align: center;
+        }
+
+        .btn-group-lg>.btn,
+        .btn-lg {
+            font-family: 'Nanum Myeongjo', serif;
+            font-weight: bold;
+        }
+
+        .orders {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="image">
+            <img src="https://ai.esmplus.com/woodst0ck/%EC%86%A1%ED%92%8D%EA%B5%AC-850.gif" class="img-fluid"
+                alt="Responsive image">
+        </div>
+        <div class="title">
+            <h1>차량용 고속무선 충전거치대, ST-CD200 <span class="badge badge-danger">특가</span> </h1>
+            <h3>39,800</h3>
+            <h4>원/개</h4>
+        </div>
+        <div class="exchange">
+            &#x1F4B1;달러/원 환율:
+            <span id="exchangeRate"></span>
+            <div id="exchangeDate"></div>
+        </div>
+        <div class="contents">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">주문자 성함</span>
+                </div>
+                <input id="inputName" type="text" class="form-control" aria-describedby="basic-addon3"
+                    placeholder="이름을 입력해 주세요 (예: 홍길동)">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">수량</label>
+                </div>
+                <select id="selectCount" class="custom-select">
+                    <option selected value="">수량을 선택해 주세요</option>
+                    <option value="1">1개</option>
+                    <option value="2">2개</option>
+                    <option value="3">3개</option>
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">주소</span>
+                </div>
+                <input id="inputAddress" type="text" class="form-control" aria-describedby="basic-addon3"
+                    placeholder="(예: 서울시 강남구 학동로 426)">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">전화번호</span>
+                </div>
+                <input id="inputPhone" type="text" class="form-control" aria-describedby="basic-addon3"
+                    placeholder="(예: 010-0000-0000)">
+            </div>
+            <div class="buyBtn">
+                <button onclick="submit()" type="button" class="btn btn-danger btn-lg">주문하기</button>
+            </div>
+        </div>
+
+        <div class="orders">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">주문자 성함</th>
+                        <th scope="col">수량</th>
+                        <th scope="col">주소</th>
+                        <th scope="col">전화번호</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-box">
+                    <tr>
+                        <td>홍길동</td>
+                        <td>1</td>
+                        <td>서울시 강남구 학동로 426</td>
+                        <td>010-1234-5678</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
