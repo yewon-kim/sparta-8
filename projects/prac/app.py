@@ -34,12 +34,12 @@ if __name__ == '__main__':
 
 # https://search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query=a
 # 주소 : search.naver.com
-# 경로 : search.naver
+# 경로 : /search.naver
 # 쿼리 파라미터 : sm=top_hty&fbm=1&ie=utf8&query=a
 
 # https://search.naver.com/search.naver/movies
 # 주소 : search.naver.com
-# 경로 : search.naver/movies
+# 경로 : /search.naver/movies
 # 쿼리 파라미터 : 없음
 
 # http://localhost:27017/
