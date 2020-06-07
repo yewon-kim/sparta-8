@@ -33,6 +33,19 @@ for i in range(7):
 put = []
 put.append(deck.pop())
 
+# 낼 수 있는 카드 리스트
+def getAvailable(hand, last_card):
+    available = []
+    for card in hand:
+        if (card[0] == last_card[0]
+            or card[1] == last_card[1]
+            or card[0] == 'Joker'
+            or put[-1][0] == 'Joker'):
+            available.append(card)
+    return available
+
+# 턴
+
 
 ### 게임 시작 ###
 while True:
@@ -43,13 +56,7 @@ while True:
     print("놓인 카드 >>", put[-1]) # [-1]은 마지막 카드
 
     # 가능한 카드 출력
-    available = []
-    for card in player:
-        if (card[0] == put[-1][0]
-            or card[1] == put[-1][1]
-            or card[0] == 'Joker'
-            or put[-1][0] == 'Joker'):
-            available.append(card)
+    available = getAvailable(player, put[-1])
 
     print("낼 수 있는 카드: ", available)
 
@@ -72,13 +79,7 @@ while True:
     print("놓인 카드 >>", put[-1])
 
     # 가능한 카드
-    available = []
-    for card in computer:
-        if (card[0] == put[-1][0]
-            or card[1] == put[-1][1]
-            or card[0] == 'Joker'
-            or put[-1][0] == 'Joker'):
-            available.append(card)
+    available = getAvailable(computer, put[-1])
 
     if len(available) > 0:
         selected = random.choice(available)
