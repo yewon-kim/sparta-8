@@ -45,11 +45,13 @@ def saving():
     
 	# 3. mongoDB에 데이터 넣기
     db.memo.insert_one({
-        'image': og_image['content'],
-        'title': og_title['content'],
-        'description': og_description['content']
+        'image': og_image.get('content', None),
+        'title': og_title.get('content', None),
+        'description': og_description.get('content', None),
+        'url': url,
+        'comment': comment
     })
-    return jsonify({'result': 'success', 'msg':'POST 연결되었습니다!'})
+    return jsonify({'result': 'success', 'msg':'포스팅 성공!'})
 
 if __name__ == '__main__':
    app.run('0.0.0.0',port=5000,debug=True)
