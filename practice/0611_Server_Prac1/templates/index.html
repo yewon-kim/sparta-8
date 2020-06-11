@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Server Prac1</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            width: 500px;
+        }
+
+        .card-img-top {
+            margin: 8px 0;
+            width: 300px;
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#cards-box').html('');
+            listing();
+        });
+
+        function listing() {
+            $.ajax({
+                type: 'GET',
+                url: '/memo',
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let articles = response['articles']
+
+                        for (let i = 0; i < articles.length; i++) {
+                            let name = articles[i]['name']
+                            let comment = articles[i]['comment']
+                            let desc = articles[i]['desc']
+                            let image = articles[i]['image']
+                            let title = articles[i]['title']
+                            let url = articles[i]['url']
+                            $('#cards-box').append(`
+                            <div class="card">
+                                <div class="card-img-top"
+                                    style="background-image: url(${image});">
+                                </div>
+                                <div class="card-body">
+                                    <span>${name}</span>
+                                    <a href="${url}">${title}</a>
+                                    <p>${desc}</p>
+                                    <p>${comment}</p>
+                                </div>
+                            </div>
+                            `)
+                        }
+                    }
+                }
+            })
+        }
+
+        function posting() {
+            // 1. 유저가 입력한 데이터를 #posting-url과 #posting-comment에서 가져오기
+            let name = $('#posting-name').val();
+            let url = $('#posting-url').val();
+            let comment = $('#posting-comment').val();
+
+            // 2. memo에 POST 방식으로 메모 생성 요청하기
+            $.ajax({
+                type: 'POST',
+                url: '/memo',
+                data: {
+                    'name_give': name,
+                    'url_give': url,
+                    'comment_give': comment
+                },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert('포스팅 성공!')
+                        window.location.reload();
+                    } else {
+                        alert('서버 오류!');
+                    }
+                }
+            });
+        }
+    </script>
+
+</head>
+
+<body>
+    <div class="form-post" id="posting-box">
+        <div style="display: flex; flex-direction: column;">
+            <input id="posting-name" placeholder="이름">
+            <input id="posting-url" placeholder="url 주소">
+            <textarea id="posting-comment" rows="2" placeholder="무슨 생각을 하고 계신가요?"></textarea>
+            <button onclick="posting()" class="btn btn-primary">저장</button>
+        </div>
+    </div>
+
+    <div class="card-columns" id="cards-box">
+        <div class="card">
+            <div class="card-img-top"
+                style="background-image: url(https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg);">
+            </div>
+            <div class="card-body">
+                <span>이름</span>
+                <a href="#">여기 기사 제목이 들어가죠</a>
+                <p">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                <p>여기에 코멘트가 들어갑니다.</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
