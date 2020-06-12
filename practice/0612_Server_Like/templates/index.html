@@ -88,11 +88,11 @@
 
         function like_comment(time) {
             $.ajax({
-                type: 'POST', // 타입을 작성합니다.
-                url: '/comments/like', // url을 작성합니다.
+                type: 'POST',
+                url: '/comments/like',
                 data: {
                     'time_give': time
-                }, // data를 작성합니다. },
+                },
                 success: function (response) {
                     if (response['result'] == 'success') {
                         alert('좋아요 표시되었습니다.');
@@ -100,14 +100,6 @@
                     }
                 }
             });
-        }
-
-        function is_long(obj) {
-            let content = $(obj).val();
-            if (content.length > 140) {
-                alert('리뷰는 140자까지 기록할 수 있습니다.');
-                $(obj).val(content.substring(0, content.length - 1));
-            }
         }
     </script>
 
@@ -129,7 +121,6 @@
         <input type="text" placeholder="이름" id="name">
         <input type="text" placeholder="내용" id="opinion">
         <button onclick="make_comment()">작성</button>
-
     </div>
 
     <div id="commentBox">
