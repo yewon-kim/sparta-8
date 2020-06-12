@@ -10,6 +10,13 @@
             width: 500px;
         }
 
+        .card {
+            margin: 8px;
+            padding: 8px;
+            border: 1px solid gray;
+            border-radius: 8px;
+        }
+
         .card-img-top {
             margin: 8px 0;
             width: 300px;
@@ -30,30 +37,37 @@
         function listing() {
             $.ajax({
                 type: 'GET',
-                url: '/memo',
+                url: '/api/memo',
                 data: {},
                 success: function (response) {
                     if (response['result'] == 'success') {
                         let articles = response['articles']
 
                         for (let i = 0; i < articles.length; i++) {
-                            let name = articles[i]['name']
-                            let comment = articles[i]['comment']
-                            let desc = articles[i]['desc']
-                            let image = articles[i]['image']
-                            let title = articles[i]['title']
-                            let url = articles[i]['url']
+                            let number = i + 1;
+                            let name = articles[i]['name'];
+                            let comment = articles[i]['comment'];
+                            let desc = articles[i]['desc'];
+                            let image = articles[i]['image'];
+                            let title = articles[i]['title'];
+                            let url = articles[i]['url'];
+                            let like = articles[i]['like'];
                             $('#cards-box').append(`
                             <div class="card">
                                 <div class="card-img-top"
                                     style="background-image: url(${image});">
                                 </div>
                                 <div class="card-body">
-                                    <span>${name}</span>
+                                    <p>${number}</p>
+                                    <p>${name}</p>
                                     <a href="${url}">${title}</a>
                                     <p>${desc}</p>
                                     <p>${comment}</p>
                                 </div>
+                                <button href="#" onclick="like()">
+                                    <span>좋아요　</span>
+                                    <span>${like}</span>
+                                </button>
                             </div>
                             `)
                         }
@@ -71,7 +85,7 @@
             // 2. memo에 POST 방식으로 메모 생성 요청하기
             $.ajax({
                 type: 'POST',
-                url: '/memo',
+                url: '/api/memo',
                 data: {
                     'name_give': name,
                     'url_give': url,
@@ -83,6 +97,27 @@
                         window.location.reload();
                     } else {
                         alert('서버 오류!');
+                    }
+                }
+            });
+        }
+
+        function like_article(number) {
+            // 1. 서버에 1) POST 방식으로, 2) /api/like 라는 url에, 3) name_give라는 이름으로 name을 전달합니다.
+            // 참고) POST 방식이므로 data: {'name_give': name} 과 같은 양식이 되어야합니다!
+            // 2. '좋아요 완료!' 얼럿을 띄웁니다.
+            // 3. 변경된 정보를 반영하기 위해 새로고침합니다.
+            $.ajax({
+                type: 'POST',
+                url: '/api/like',
+                data: {
+                    'number_give': number
+                },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let msg = response['msg'];
+                        alert(msg);
+                        window.location.reload();
                     }
                 }
             });
@@ -107,11 +142,16 @@
                 style="background-image: url(https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg);">
             </div>
             <div class="card-body">
-                <span>이름</span>
+                <p>글 번호</p>
+                <p>이름</p>
                 <a href="#">여기 기사 제목이 들어가죠</a>
-                <p">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                <p>기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
                 <p>여기에 코멘트가 들어갑니다.</p>
             </div>
+            <button href="#" onclick="like_article()">
+                <span>좋아요　</span>
+                <span>1</span>
+            </button>
         </div>
     </div>
 </body>
