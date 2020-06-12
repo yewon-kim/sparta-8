@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Webpage Title -->
+    <title>글 작성/좋아요 연습</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#orders-box').html('');
+            listing();
+        });
+
+        function make_comment() {
+            // 1. 내용을 가져옵니다.
+            let name = $('#name').val();
+            let opinion = $('#opinion').val();
+
+            // 2. 입력하지 않았을 경우 alert를 띄웁니다.
+            if (name == '') {
+                alert('이름을 입력해주세요');
+                $('#name').focus();
+                return;
+            } else if (opinion == '') {
+                alert('내용을 입력해주세요');
+                $('#opinion').focus();
+                return;
+            }
+
+            // 3. POST /comments 에 저장을 요청합니다.
+            $.ajax({
+                type: 'POST',
+                url: '/comments/list',
+                data: {
+                    'name_give': name,
+                    'opinion_give': opinion
+                },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert('댓글이 작성되었습니다.');
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+        function listing() {
+            // 1. 리뷰 목록을 서버에 요청하기
+            // 2. 요청 성공 여부 확인하기
+            // 3. 요청 성공했을 때 리뷰를 올바르게 화면에 나타내기
+            $.ajax({
+                type: "GET",
+                url: "/comments/list",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let comments = response['comments'];
+                        for (let i = 0; i < comments.length; i++) {
+                            let comment = comments[i];
+                            let time = comment['time'];
+                            let name = comment['name'];
+                            let opinion = comment['opinion'];
+                            let like = comment['like'];
+
+                            $('#commentBox').append(`
+                            <div class="comment-box">
+                                <div>${time}</div>
+                                <div>${name}</div>
+                                <div>${opinion}</div>
+                                <button onclick="like_comment(${time})" id="likeBtn">좋아요: ${like}</button>
+                            </div>
+                            `);
+                        }
+                    } else {
+                        alert('댓글을 받아오지 못했습니다');
+                    }
+                }
+            });
+        }
+
+        function like_comment(time) {
+            $.ajax({
+                type: 'POST', // 타입을 작성합니다.
+                url: '/comments/like', // url을 작성합니다.
+                data: {
+                    'time_give': time
+                }, // data를 작성합니다. },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert('좋아요 표시되었습니다.');
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+        function is_long(obj) {
+            let content = $(obj).val();
+            if (content.length > 140) {
+                alert('리뷰는 140자까지 기록할 수 있습니다.');
+                $(obj).val(content.substring(0, content.length - 1));
+            }
+        }
+    </script>
+
+    <style type="text/css">
+        body {
+            width: 500px;
+        }
+
+        .comment-box {
+            margin: 4px 0;
+            padding: 4px;
+            border: 1px solid gray;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="compose">
+        <input type="text" placeholder="이름" id="name">
+        <input type="text" placeholder="내용" id="opinion">
+        <button onclick="make_comment()">작성</button>
+
+    </div>
+
+    <div id="commentBox">
+
+    </div>
+</body>
+
+</html>
