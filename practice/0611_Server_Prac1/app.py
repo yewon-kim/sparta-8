@@ -43,7 +43,7 @@ def saving():
     url_description = og_description['content']
 
     article = {'name': name_receive, 'url': url_receive, 'comment': comment_receive, 'image': url_image,
-               'title': url_title, 'desc': url_description}
+               'title': url_title, 'desc': url_description, 'like': 0}
     
 	# 3. mongoDB에 데이터 넣기
     db.prac1.insert_one(article)
