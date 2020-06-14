@@ -35,10 +35,10 @@
                 return;
             }
 
-            // 3. POST /comments 에 저장을 요청합니다.
+            // 3. POST /api/list 에 저장을 요청합니다.
             $.ajax({
                 type: 'POST',
-                url: '/comments/list',
+                url: '/api/list',
                 data: {
                     'name_give': name,
                     'opinion_give': opinion
@@ -58,7 +58,7 @@
             // 3. 요청 성공했을 때 리뷰를 올바르게 화면에 나타내기
             $.ajax({
                 type: "GET",
-                url: "/comments/list",
+                url: "/api/list",
                 data: {},
                 success: function (response) {
                     if (response['result'] == 'success') {
@@ -75,7 +75,7 @@
                                 <div>${time}</div>
                                 <div>${name}</div>
                                 <div>${opinion}</div>
-                                <button onclick="like_comment(${time})" id="likeBtn">좋아요: ${like}</button>
+                                <button onclick="like_comment('${time}')" id="likeBtn">좋아요: ${like}</button>
                             </div>
                             `);
                         }
@@ -88,15 +88,13 @@
 
         function like_comment(time) {
             $.ajax({
-                type: 'POST',
-                url: '/comments/like',
-                data: {
-                    'time_give': time
-                },
+                type: "POST",
+                url: "/api/like",
+                data: { 'time_give': time },
                 success: function (response) {
                     if (response['result'] == 'success') {
-                        alert('좋아요 표시되었습니다.');
-                        window.location.reload();
+                        alert('좋아요 완료!')
+                        window.location.reload()
                     }
                 }
             });

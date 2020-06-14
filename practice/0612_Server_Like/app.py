@@ -13,7 +13,7 @@ def home():
     return render_template('index.html')
 
 ## API 역할을 하는 부분
-@app.route('/comments/list', methods=['POST'])
+@app.route('/api/list', methods=['POST'])
 def write_comment():
     name_receive = request.form['name_give']
     opinion_receive = request.form['opinion_give']
@@ -30,7 +30,7 @@ def write_comment():
     return jsonify({'result':'success'})
 
 
-@app.route('/comments/list', methods=['GET'])
+@app.route('/api/list', methods=['GET'])
 def read_comments():
     # db에서 코멘트 정보 가져오기
     comments = list(db.comments.find({}, {'_id': 0}))
@@ -38,15 +38,13 @@ def read_comments():
     # 성공 여부 & 코멘트 목록 반환
     return jsonify({'result':'success', 'comments': comments})
 
-
-@app.route('/comments/like', methods=['POST'])
-def like_comment():
+@app.route('/api/like', methods=['POST'])
+def comment_like():
     time_receive = request.form['time_give']
-    comment = db.comments.find_one({'time': time_receive})
+    comment = db.comments.find_one({'time':time_receive})
     new_like = comment['like'] + 1
-    db.comments.update_one({'time': time_receive}, {'$set':{'like': new_like}})
-
-    return jsonify({'result':'success'})
+    db.comments.update_one({'time':time_receive},{'$set':{'like':new_like}})
+    return jsonify({'result': 'success'})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
