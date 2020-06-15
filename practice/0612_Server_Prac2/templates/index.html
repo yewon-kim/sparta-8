@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>프론트-백엔드 연결 마지막 예제!</title>
+  <title>Server Practice</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css" />
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
@@ -19,6 +19,7 @@
       display: flex;
       flex-direction: column;
     }
+    #posting-comment {padding: 8px;}
 
     .star-list {
       width: 500px;
@@ -58,14 +59,15 @@
           // 4. for 문을 활용하여 star 배열의 요소를 차례대로 조회합니다.
           for (let i = 0; i < stars.length; i++) {
             let star = stars[i];
-            // 5. star[i] 요소의 name, url, img_url, recent, like 키 값을 활용하여 값을 조회합니다.
+
+            let number = star['number']
             let name = star['name']
             let url = star['url']
             let img_url = star['img_url']
-            let recent = star['recent']
+            let comment = star['comment']
             let like = star['like']
 
-            // 6. 영화인 카드를 만듭니다.
+            // 6. 카드를 만듭니다.
             let temp_html = `<div class="card">
                                       <div class="card-content">
                                         <div class="media">
@@ -79,18 +81,18 @@
                                           </div>
                                           <div class="media-content">
                                             <a href="${url}" target="_blank" class="star-name title is-4">${name} (좋아요: ${like})</a>
-                                            <p class="subtitle is-6">${recent}</p>
+                                            <p class="subtitle is-6">${comment}</p>
                                           </div>
                                         </div>
                                       </div>
                                       <footer class="card-footer">
-                                        <a href="#" onclick="like_star('${name}')" class="card-footer-item has-text-info">
+                                        <a href="#" onclick="like_star(${number})" class="card-footer-item has-text-info">
                                           위로!
                                           <span class="icon">
                                             <i class="fas fa-thumbs-up"></i>
                                           </span>
                                         </a>
-                                        <a href="#" onclick="delete_star('${name}')" class="card-footer-item has-text-danger">
+                                        <a href="#" onclick="delete_star(${number})" class="card-footer-item has-text-danger">
                                           삭제
                                           <span class="icon">
                                             <i class="fas fa-ban"></i>
@@ -114,8 +116,7 @@
         type: "POST",
         url: "/api/add",
         data: {
-          url_give: url,
-          comment_give: comment
+          'comment_give': comment
         },
         success: function (response) {
           if (response['result'] == 'success') {
@@ -126,36 +127,28 @@
       })
     }
 
-    function like_star(name) {
-      // 1. 서버에 1) POST 방식으로, 2) /api/like 라는 url에, 3) name_give라는 이름으로 name을 전달합니다.
-      // 참고) POST 방식이므로 data: {'name_give': name} 과 같은 양식이 되어야합니다!
+    function like_star(number) {
       $.ajax({
         type: "POST",
         url: "/api/like",
-        data: { 'name_give': name },
+        data: { 'number_give': number },
         success: function (response) {
           if (response['result'] == 'success') {
-            // 2. '좋아요 완료!' 얼럿을 띄웁니다.
             alert('좋아요 완료!')
-            // 3. 변경된 정보를 반영하기 위해 새로고침합니다.
             window.location.reload()
           }
         }
       });
     }
 
-    function delete_star(name) {
-      // 1. 서버에 1) POST 방식으로, 2) /api/delete 라는 url에, 3) name_give라는 이름으로 name을 전달합니다.
-      // 참고) POST 방식이므로 data: {'name_give': name} 과 같은 양식이 되어야합니다!
+    function delete_star(number) {
       $.ajax({
         type: "POST",
         url: "/api/delete",
-        data: { 'name_give': name },
+        data: { 'number_give': number },
         success: function (response) {
           if (response['result'] == 'success') {
-            // 2. '삭제 완료! 안녕!' 얼럿을 띄웁니다.
-            alert('삭제 완료! 안녕!')
-            // 3. 변경된 정보를 반영하기 위해 새로고침합니다.
+            alert('삭제 완료!')
             window.location.reload()
           }
         }
@@ -180,8 +173,8 @@
   </section>
 
   <div class="posting-box">
-    <input type="text" placeholder="Enter url" id="posting-url">
-    <textarea placeholder="Enter comment" id="posting-comment"></textarea>
+    <!-- <input type="text" placeholder="Enter url" id="posting-url"> -->
+    <textarea rows="5" placeholder="Enter comment" id="posting-comment"></textarea>
     <button onclick="posting()">저장</button>
   </div>
 
