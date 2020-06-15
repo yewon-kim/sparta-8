@@ -47,7 +47,6 @@ def insert_star(url):
     }
 
     db.prac2.insert_one(doc)
-    print('완료!', name)
 
 # 기존 prac2 콜렉션을 삭제하고, 출처 url들을 가져온 후, 크롤링하여 DB에 저장합니다.
 def insert_all():
