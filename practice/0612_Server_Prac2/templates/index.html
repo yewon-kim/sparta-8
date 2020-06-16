@@ -60,7 +60,8 @@
           for (let i = 0; i < stars.length; i++) {
             let star = stars[i];
 
-            let number = star['number']
+            let objectid = star['_id']
+            let time = star['time']
             let name = star['name']
             let url = star['url']
             let img_url = star['img_url']
@@ -82,17 +83,18 @@
                                           <div class="media-content">
                                             <a href="${url}" target="_blank" class="star-name title is-4">${name} (좋아요: ${like})</a>
                                             <p class="subtitle is-6">${comment}</p>
+                                            <p class="subtitle is-6">${time}</p>
                                           </div>
                                         </div>
                                       </div>
                                       <footer class="card-footer">
-                                        <a href="#" onclick="like_star(${number})" class="card-footer-item has-text-info">
+                                        <a href="#" onclick="like_star('${objectid}')" class="card-footer-item has-text-info">
                                           위로!
                                           <span class="icon">
                                             <i class="fas fa-thumbs-up"></i>
                                           </span>
                                         </a>
-                                        <a href="#" onclick="delete_star(${number})" class="card-footer-item has-text-danger">
+                                        <a href="#" onclick="delete_star('${objectid}')" class="card-footer-item has-text-danger">
                                           삭제
                                           <span class="icon">
                                             <i class="fas fa-ban"></i>
@@ -127,11 +129,11 @@
       })
     }
 
-    function like_star(number) {
+    function like_star(objectid) {
       $.ajax({
         type: "POST",
         url: "/api/like",
-        data: { 'number_give': number },
+        data: { 'objectid_give': objectid },
         success: function (response) {
           if (response['result'] == 'success') {
             alert('좋아요 완료!')
@@ -141,11 +143,11 @@
       });
     }
 
-    function delete_star(number) {
+    function delete_star(objectid) {
       $.ajax({
         type: "POST",
         url: "/api/delete",
-        data: { 'number_give': number },
+        data: { 'objectid_give': objectid },
         success: function (response) {
           if (response['result'] == 'success') {
             alert('삭제 완료!')

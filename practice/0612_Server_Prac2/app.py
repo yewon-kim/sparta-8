@@ -10,6 +10,8 @@ import re
 import datetime
 from time import time
 
+from bson import ObjectId
+
 client = MongoClient('localhost', 27017)
 db = client.dbsparta
 
@@ -23,11 +25,10 @@ def home():
 @app.route('/api/list', methods=['GET'])
 def star_list():
     # 1. mystar 목록 전체를 검색합니다. ID는 제외하고 like 가 많은 순으로 정렬합니다.
-    stars = list(db.mystar.find({},{'_id':False}).sort('like',-1))
-
-    # .aggregate([
-    #     {'$set': {'_id': {'$toString': '$_id'}}}
-    # ]).sort('like',-1))
+    stars = list(db.mystar.aggregate([
+        {'$set': {'_id': {'$toString': '$_id'}}},
+        {'$sort': {'like': -1}}
+    ]))
 
     # 2. 성공하면 success 메시지와 함께 stars 목록을 클라이언트에 전달합니다.
     return jsonify({'result': 'success','stars_list':stars})
@@ -69,7 +70,7 @@ def saving():
     url_title = url_receive if og_title == None else og_title['content']
 
     article = {
-        'number': int(100000 * time()),
+        'time': time(),
         'name': cleanhtml(url_title),
         'img_url': cleanhtml(url_image),
         'comment': comment_receive,
@@ -84,26 +85,18 @@ def saving():
 
 @app.route('/api/like', methods=['POST'])
 def star_like():
-    number_receive = int(request.form['number_give'])
-    star = db.mystar.find_one({'number':number_receive})
+    objectid_receive = request.form['objectid_give']
+    star = db.mystar.find_one({'_id':ObjectId(objectid_receive)})
     new_like = star['like']+1
-    db.mystar.update_one({'number':number_receive},{'$set':{'like':new_like}})
-
-    # name_receive = request.form['name_give']
-    # star = db.mystar.find_one({'name':name_receive})
-    # new_like = star['like']+1
-    # db.mystar.update_one({'name':name_receive},{'$set':{'like':new_like}})
+    db.mystar.update_one({'_id':ObjectId(objectid_receive)},{'$set':{'like':new_like}})
 
     return jsonify({'result': 'success'})
 
 
 @app.route('/api/delete', methods=['POST'])
 def star_delete():
-    number_receive = request.form['number_give']
-    db.mystar.delete_one({'number':number_receive})
-
-    # name_receive = request.form['name_give']
-    # db.mystar.delete_one({'name':name_receive})
+    objectid_receive = request.form['objectid_give']
+    db.mystar.delete_one({'_id':ObjectId(objectid_receive)})
 
     return jsonify({'result': 'success'})
 
