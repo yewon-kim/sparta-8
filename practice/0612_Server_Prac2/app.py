@@ -23,7 +23,7 @@ def home():
 
 # API 역할을 하는 부분
 @app.route('/api/list', methods=['GET'])
-def star_list():
+def show_star_list():
     # 1. mystar 목록 전체를 검색합니다. ID는 제외하고 like 가 많은 순으로 정렬합니다.
     stars = list(db.mystar.aggregate([
         {'$set': {'_id': {'$toString': '$_id'}}},
@@ -33,7 +33,21 @@ def star_list():
     # 2. 성공하면 success 메시지와 함께 stars 목록을 클라이언트에 전달합니다.
     return jsonify({'result': 'success','stars_list':stars})
 
+@app.route('/api/new', methods=['GET'])
+def show_star_new():
+    stars = list(db.mystar.aggregate([
+        {'$set': {'_id': {'$toString': '$_id'}}},
+        {'$sort': {'time': -1}}
+    ]))
+    return jsonify({'result': 'success','stars_list':stars})
 
+@app.route('/api/kr', methods=['GET'])
+def show_star_kr():
+    stars = list(db.mystar.aggregate([
+        {'$set': {'_id': {'$toString': '$_id'}}},
+        {'$match': {'nation': "South Korea"}}
+    ]))
+    return jsonify({'result': 'success','stars_list':stars})
 
 def cleanhtml(raw_html):
     cleanr = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
@@ -51,6 +65,7 @@ regex_url = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$\-@\.&+:/?=]|[!*\(\),]|(?:%[0-9a-fA-
 @app.route('/api/add', methods=['POST'])
 def saving():
 	# 1. 클라이언트로부터 데이터를 받기
+    nation_receive = request.form['nation_give']
     comment_receive = request.form['comment_give']
     url_receive = regex_search_group(comment_receive, regex_url)
 
@@ -70,6 +85,7 @@ def saving():
     url_title = url_receive if og_title == None else og_title['content']
 
     article = {
+        'nation': nation_receive,
         'time': time(),
         'name': cleanhtml(url_title),
         'img_url': cleanhtml(url_image),
