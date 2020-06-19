@@ -15,52 +15,55 @@ from bson import ObjectId
 client = MongoClient('localhost', 27017)
 db = client.dbsparta
 
-# HTML을 주는 부분
+# index HTML
 @app.route('/')
 def home():
     return render_template('index.html')
 
-@app.route('/us')
-def us():
-    return render_template('us.html')
-
-# API 역할을 하는 부분
+# index API
 @app.route('/api/top', methods=['GET'])
 def show_all_top():
-    # 1. articles 목록 전체를 검색합니다. like 가 많은 순으로 정렬합니다.
-    stars = list(db.articles.aggregate([
+    # 1. articles 목록 전체를 검색합니다. happy 가 많은 순으로 정렬합니다.
+    articles = list(db.database.aggregate([
         {'$set': {'_id': {'$toString': '$_id'}}},
-        {'$sort': {'like': -1}}
+        {'$sort': {'happy': -1}}
     ]))
 
-    # 2. 성공하면 stars 목록을 클라이언트에 전달합니다.
-    return jsonify({'result': 'success','stars_list':stars})
+    # 2. 성공하면 articles 목록을 클라이언트에 전달합니다.
+    return jsonify({'result': 'success', 'articles_list': articles})
 
 @app.route('/api/new', methods=['GET'])
 def show_all_new():
-    stars = list(db.articles.aggregate([
+    articles = list(db.database.aggregate([
         {'$set': {'_id': {'$toString': '$_id'}}},
         {'$sort': {'time': -1}}
     ]))
-    return jsonify({'result': 'success','stars_list':stars})
+    return jsonify({'result': 'success', 'articles_list': articles})
 
-@app.route('/api/us/top', methods=['GET'])
-def show_us_top():
-    stars = list(db.articles.aggregate([
+
+# category HTML
+@app.route('/<isoCode>')
+def category(isoCode):
+    return render_template('category.html', isoCode = isoCode)
+
+# category API
+@app.route('/api/<isoCode>/top', methods=['GET'])
+def show_category_top(isoCode):
+    articles = list(db.database.aggregate([
         {'$set': {'_id': {'$toString': '$_id'}}},
-        {'$match': {'nation': "United States"}},
-        {'$sort': {'like': -1}}
+        {'$match': {'countryCode': isoCode}},
+        {'$sort': {'happy': -1}}
     ]))
-    return jsonify({'result': 'success','stars_list':stars})
+    return jsonify({'result': 'success', 'articles_list': articles})
 
-@app.route('/api/us/new', methods=['GET'])
-def show_us_new():
-    stars = list(db.articles.aggregate([
+@app.route('/api/<isoCode>/new', methods=['GET'])
+def show_category_new(isoCode):
+    articles = list(db.database.aggregate([
         {'$set': {'_id': {'$toString': '$_id'}}},
-        {'$match': {'nation': "United States"}},
+        {'$match': {'countryCode': isoCode}},
         {'$sort': {'time': -1}}
     ]))
-    return jsonify({'result': 'success','stars_list':stars})
+    return jsonify({'result': 'success', 'articles_list': articles})
 
 
 
@@ -77,25 +80,25 @@ def regex_search_group(string, regex):
 
 regex_url = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$\-@\.&+:/?=]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 
-@app.route('/api/add', methods=['POST'])
+@app.route('/api/compose', methods=['POST'])
 def saving():
 	# 1. 클라이언트로부터 데이터를 받기
-    nation_receive = request.form['nation_give']
+    countryCode_receive = request.form['countryCode_give']
     comment_receive = request.form['comment_give']
     url_receive = regex_search_group(comment_receive, regex_url)
 
     if url_receive == None:
         article = {
-        'nation': nation_receive,
+        'countryCode': countryCode_receive,
         'time': time(),
         'comment': comment_receive,
         'url_title': '',
         'url_img': '',
         'url': '',
-        'like': 0
+        'happy': 0
         }
 
-        db.articles.insert_one(article)
+        db.database.insert_one(article)
         
         return jsonify({'result': 'success', 'msg':'포스팅 되었습니다!'})
 
@@ -116,34 +119,35 @@ def saving():
         url_title = url_receive if og_title == None else og_title['content']
 
         article = {
-            'nation': nation_receive,
+            'countryCode': countryCode_receive,
             'time': time(),
             'comment': comment_receive,
             'url_title': cleanhtml(url_title),
             'url_img': cleanhtml(url_image),
             'url': cleanhtml(url_receive),
-            'like': 0
+            'happy': 0
         }
 
         # 3. mongoDB에 데이터를 넣기
-        db.articles.insert_one(article)
+        db.database.insert_one(article)
         
-        return jsonify({'result': 'success', 'msg':'포스팅 되었습니다!'})
+        return jsonify({'result': 'success'})
 
-@app.route('/api/like', methods=['POST'])
-def star_like():
+
+
+@app.route('/api/happy', methods=['POST'])
+def happy():
     objectid_receive = request.form['objectid_give']
-    star = db.articles.find_one({'_id':ObjectId(objectid_receive)})
-    new_like = star['like']+1
-    db.articles.update_one({'_id':ObjectId(objectid_receive)},{'$set':{'like':new_like}})
+    article = db.database.find_one({'_id':ObjectId(objectid_receive)})
+    new_happy = article['happy'] + 1
+    db.database.update_one({'_id':ObjectId(objectid_receive)},{'$set':{'happy':new_happy}})
 
-    return jsonify({'result': 'success'})
-
+    return jsonify({'result': 'success', 'article_happy': article['happy']})
 
 @app.route('/api/delete', methods=['POST'])
 def star_delete():
     objectid_receive = request.form['objectid_give']
-    db.articles.delete_one({'_id':ObjectId(objectid_receive)})
+    db.database.delete_one({'_id':ObjectId(objectid_receive)})
 
     return jsonify({'result': 'success'})
 

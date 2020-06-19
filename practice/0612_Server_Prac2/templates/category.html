@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Server Practice</title>
+  <title>{{isoCode|capitalize}}</title>
   <style>
     .posting-box {
       width: 500px;
@@ -15,6 +15,10 @@
 
     #posting-comment {
       padding: 8px;
+    }
+
+    #postBtn:disabled {
+      background-color: red;
     }
 
     .card-list {
@@ -41,55 +45,49 @@
   <script src="/static/js/common.js"></script>
   <script>
     $(document).ready(function () {
-      show_all_top();
+      show_top('{{isoCode}}');
     });
 
-    function show_all_top() {
-      // 1. #card_box의 내부 html 태그를 모두 삭제합니다.
+    function show_top(countryCode) {
       $('#card-box').empty()
 
-      // 2. 서버에 1) GET 방식으로, 2) /top 라는 주소로 list를 요청합니다.
       $.ajax({
         type: "GET",
-        url: "/api/top",
+        url: `/api/${countryCode}/top`,
         data: {},
         success: function (response) {
-          // 3. 서버가 돌려준 list를 변수에 저장합니다.
           let articles = response['articles_list']
-          // 4. for 문을 활용하여 배열의 요소를 차례대로 조회합니다.
           for (let i = 0; i < articles.length; i++) {
             let article = articles[i];
 
-            let objectid = article['_id'];
-            let countryCode = article['countryCode'];
-            let time_unix = article['time'];
-            let time = fn_dateTimeToFormatted(time_unix);
-            let url_title = article['url_title'];
-            let url = article['url'];
-            let url_img = article['url_img'];
-            let comment = article['comment'];
-            let happy = article['happy'];
+            let objectid = article['_id']
+            let countryCode = article['countryCode']
+            let time_unix = article['time']
+            let time = fn_dateTimeToFormatted(time_unix)
+            let url_title = article['url_title']
+            let url = article['url']
+            let url_img = article['url_img']
+            let comment = article['comment']
+            let happy = article['happy']
 
-            // 6. 카드를 만듭니다.
             if (url == '') {
               card = make_card(countryCode, time, comment, objectid, happy);
             } else {
               card = make_card_url(countryCode, time, comment, url_img, url_title, url, objectid, happy);
             }
 
-            // 7. #card-box에 temp_html을 붙입니다.
             $('#card-box').append(card)
           }
         }
       });
     }
 
-    function show_all_new() {
+    function show_new(countryCode) {
       $('#card-box').empty()
 
       $.ajax({
         type: "GET",
-        url: "/api/new",
+        url: `/api/${countryCode}/new`,
         data: {},
         success: function (response) {
           let articles = response['articles_list']
@@ -121,14 +119,13 @@
 </head>
 
 <body>
-  <h1 class="title">Home</h1>
+  <h1 class="title">{{isoCode}}</h1>
 
   <div>
-    <a href="/us">미국</a>
-    <a href="/kr">한국</a>
+    <a href="/">홈으로</a>
   </div>
-  <button onclick="show_all_top()">추천순</button>
-  <button onclick="show_all_new()">최신순</button>
+  <button onclick="show_top('{{isoCode}}')">추천순</button>
+  <button onclick="show_new('{{isoCode}}')">최신순</button>
 
   <div class="posting-box">
     <select name='countryCode' id="countryCode">
@@ -137,7 +134,7 @@
       <option value='kr'>South Korea</option>
     </select>
     <textarea rows="5" placeholder="Enter comment" id="posting-comment"></textarea>
-    <button onclick="posting()">저장</button>
+    <button id="postBtn" onclick="posting()">저장</button>
   </div>
 
   <div class="card-list" id="card-box">
