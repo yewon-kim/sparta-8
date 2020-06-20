@@ -24,13 +24,22 @@ function fn_dateTimeToFormatted(dt) {
   return result.formatted;
 };
 
-function make_card(countryCode, time, comment, objectid, happy) {
+function make_card(country_code, time, post_body, objectid, happy) {
   let temp_html =
     `<div class="card">
-      <div>
-        <a href="#">${countryCode}</a>
+      <header>
+        <a href="/${country_code}">${country_code}</a>
         <p>${time}</p>
-        <p>${comment}</p>
+      </header>
+
+      <section>
+        <h3>${post_body}</h3>
+      </section>
+
+      <div>
+        <button onclick="delete_card('${objectid}')">
+          삭제
+        </button>
       </div>
 
       <footer class="card-footer">
@@ -38,28 +47,37 @@ function make_card(countryCode, time, comment, objectid, happy) {
           <div>😊</div>
           <div id="happy_${objectid}">${happy}</div>
         </button>
-        <button onclick="delete_card('${objectid}')">
-          삭제
-        </button>
+        <a href="/${country_code}/${objectid}">
+          <div>💬</div>
+          <div id="happy_${objectid}">${happy}</div>
+        </a>
       </footer>
     </div>`
   return temp_html;
 }
 
-function make_card_url(countryCode, time, comment, url_img, url_title, url, objectid, happy) {
+function make_card_url(country_code, time, post_body, url_img, url_title, url, objectid, happy) {
   let temp_html =
     `<div class="card">
-      <div>
-        <a href="#">${countryCode}</a>
+      <header>
+        <a href="/${country_code}">${country_code}</a>
         <p>${time}</p>
-        <p>${comment}</p>
-      </div>
+      </header>
 
-      <div class="thumbnail_box">
-        <div class="thumbnail_image">
-          <img src="${url_img}" alt="thumbnail image"/>
+      <section>
+        <h3>${post_body}</h3>
+        <div class="thumbnail_box">
+          <div class="thumbnail_image">
+            <img src="${url_img}" alt="thumbnail image"/>
+          </div>
+          <a href="${url}" target="_blank">${url_title}</a>
         </div>
-        <a href="${url}" target="_blank">${url_title}</a>
+      </section>
+
+      <div>
+        <button onclick="delete_card('${objectid}')">
+          삭제
+        </button>
       </div>
 
       <footer class="card-footer">
@@ -67,9 +85,10 @@ function make_card_url(countryCode, time, comment, url_img, url_title, url, obje
           <div>😊</div>
           <div id="happy_${objectid}">${happy}</div>
         </button>
-        <button onclick="delete_card('${objectid}')">
-          삭제
-        </button>
+        <a href="/${country_code}/${objectid}">
+          <div>💬</div>
+          <div id="happy_${objectid}">${happy}</div>
+        </a>
       </footer>
     </div>`
   return temp_html;
@@ -78,15 +97,15 @@ function make_card_url(countryCode, time, comment, url_img, url_title, url, obje
 
 
 function posting() {
-  let comment = $('#posting-comment').val();
-  let countryCode = $('#countryCode').val();
+  let post_body = $('#postingBody').val();
+  let country_code = $('#countryCode').val();
 
   $.ajax({
     type: "POST",
     url: "/api/compose",
     data: {
-      'comment_give': comment,
-      'countryCode_give': countryCode
+      'country_code_give': country_code, 
+      'post_body_give': post_body
     },
     success: function(response) {
       if (response['result'] == 'success') {

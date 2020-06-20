@@ -1,0 +1,23 @@
+.posting_box {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+#postingBody {
+    padding: 8px;
+}
+
+.card {
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 1px solid gray;
+}
+
+.thumbnail_image {
+    width: 100px;
+}
+
+.thumbnail_image img {
+    width: 100%;
+}

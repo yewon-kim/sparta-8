@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{isoCode}} - {{articleId}}</title>
+
+    <!-- <link rel="stylesheet" type="text/css" href="/static/css/reset.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/css/common.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/category.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            show_top('{{isoCode}}');
+            show_article('{{articleId}}');
+        });
+
+        function show_article(articleId) {
+            $('#articleBox').empty()
+
+            $.ajax({
+                type: "GET",
+                url: `/api/${articleId}`,
+                data: {},
+                success: function (response) {
+                    let article = response['article'][0]
+
+                    let objectid = article['_id']
+                    let country_code = article['country_code']
+                    let time_unix = article['time']
+                    let time = fn_dateTimeToFormatted(time_unix)
+                    let url_title = article['url_title']
+                    let url = article['url']
+                    let url_img = article['url_img']
+                    let post_body = article['post_body']
+                    let happy = article['happy']
+
+                    if (url == '') {
+                        card = make_card(country_code, time, post_body, objectid, happy);
+                    } else {
+                        card = make_card_url(country_code, time, post_body, url_img, url_title, url, objectid, happy);
+                    }
+
+                    $('#articleBox').append(card)
+
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div id="articleBox"></div>
+
+    <div class="posting_box">
+        <p>Comments</p>
+        <div id="commentBox"></div>
+        <textarea rows="2" placeholder="Enter comment..." id="postingComment"></textarea>
+        <button id="commentBtn" onclick="comment()">저장</button>
+    </div>
+
+    <div>=====================구분선=====================</div>
+
+    <div>
+        <a href="/">홈으로</a>
+    </div>
+    <button onclick="show_top('{{isoCode}}')">추천순</button>
+    <button onclick="show_new('{{isoCode}}')">최신순</button>
+
+    <div id="cardBox"></div>
+</body>
+
+</html>

@@ -47,26 +47,40 @@ def category(isoCode):
     return render_template('category.html', isoCode = isoCode)
 
 # category API
-@app.route('/api/<isoCode>/top', methods=['GET'])
+@app.route('/api/top/<isoCode>', methods=['GET'])
 def show_category_top(isoCode):
     articles = list(db.database.aggregate([
         {'$set': {'_id': {'$toString': '$_id'}}},
-        {'$match': {'countryCode': isoCode}},
+        {'$match': {'country_code': isoCode}},
         {'$sort': {'happy': -1}}
     ]))
     return jsonify({'result': 'success', 'articles_list': articles})
 
-@app.route('/api/<isoCode>/new', methods=['GET'])
+@app.route('/api/new/<isoCode>', methods=['GET'])
 def show_category_new(isoCode):
     articles = list(db.database.aggregate([
         {'$set': {'_id': {'$toString': '$_id'}}},
-        {'$match': {'countryCode': isoCode}},
+        {'$match': {'country_code': isoCode}},
         {'$sort': {'time': -1}}
     ]))
     return jsonify({'result': 'success', 'articles_list': articles})
 
 
+# article HTML
+@app.route('/<isoCode>/<articleId>')
+def article(isoCode, articleId):
+    return render_template('article.html', isoCode = isoCode, articleId = articleId)
 
+# article API
+@app.route('/api/<articleId>', methods=['GET'])
+def show_article(articleId):
+    article = list(db.database.aggregate([
+        {'$set': {'_id': {'$toString': '$_id'}}},
+        {'$match': {'_id': articleId}},
+    ]))
+    return jsonify({'result': 'success', 'article': article})
+
+# POST API
 def cleanhtml(raw_html):
     cleanr = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
     cleantext = re.sub(cleanr, '', raw_html)
@@ -81,17 +95,17 @@ def regex_search_group(string, regex):
 regex_url = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$\-@\.&+:/?=]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 
 @app.route('/api/compose', methods=['POST'])
-def saving():
+def compose():
 	# 1. 클라이언트로부터 데이터를 받기
-    countryCode_receive = request.form['countryCode_give']
-    comment_receive = request.form['comment_give']
-    url_receive = regex_search_group(comment_receive, regex_url)
+    country_code_receive = request.form['country_code_give']
+    post_body_receive = request.form['post_body_give']
+    url_receive = regex_search_group(post_body_receive, regex_url)
 
     if url_receive == None:
         article = {
-        'countryCode': countryCode_receive,
+        'country_code': country_code_receive,
         'time': time(),
-        'comment': comment_receive,
+        'post_body': post_body_receive,
         'url_title': '',
         'url_img': '',
         'url': '',
@@ -103,9 +117,9 @@ def saving():
         return jsonify({'result': 'success', 'msg':'포스팅 되었습니다!'})
 
     else:
-        comment_receive = cleanhtml(comment_receive)
-        find_url = re.findall(regex_url, comment_receive)
-        for str_link in find_url: comment_receive = comment_receive.replace(str_link, "<a target = \"_blank\" href = \"" + str_link + "\" >" + str_link + "</a>")
+        post_body_receive = cleanhtml(post_body_receive)
+        find_url = re.findall(regex_url, post_body_receive)
+        for str_link in find_url: post_body_receive = post_body_receive.replace(str_link, "<a target = \"_blank\" href = \"" + str_link + "\" >" + str_link + "</a>")
 
         # 2. meta tag를 스크래핑하기
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
@@ -119,9 +133,9 @@ def saving():
         url_title = url_receive if og_title == None else og_title['content']
 
         article = {
-            'countryCode': countryCode_receive,
+            'country_code': country_code_receive,
             'time': time(),
-            'comment': comment_receive,
+            'post_body': post_body_receive,
             'url_title': cleanhtml(url_title),
             'url_img': cleanhtml(url_image),
             'url': cleanhtml(url_receive),

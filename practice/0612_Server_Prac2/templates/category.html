@@ -5,116 +5,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{isoCode|capitalize}}</title>
-  <style>
-    .posting-box {
-      width: 500px;
-      margin: 10px;
-      display: flex;
-      flex-direction: column;
-    }
 
-    #posting-comment {
-      padding: 8px;
-    }
-
-    #postBtn:disabled {
-      background-color: red;
-    }
-
-    .card-list {
-      width: 500px;
-      margin: 10px;
-    }
-
-    .card {
-      margin-bottom: 15px;
-      padding: 12px;
-      border: 1px solid gray;
-    }
-
-    .thumbnail_image {
-      width: 100px;
-    }
-
-    .thumbnail_image img {
-      width: 100%;
-    }
-  </style>
+  <!-- <link rel="stylesheet" type="text/css" href="/static/css/reset.css"> -->
+  <link rel="stylesheet" type="text/css" href="/static/css/common.css">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="/static/js/common.js"></script>
+  <script src="/static/js/category.js"></script>
+
   <script>
     $(document).ready(function () {
       show_top('{{isoCode}}');
     });
-
-    function show_top(countryCode) {
-      $('#card-box').empty()
-
-      $.ajax({
-        type: "GET",
-        url: `/api/${countryCode}/top`,
-        data: {},
-        success: function (response) {
-          let articles = response['articles_list']
-          for (let i = 0; i < articles.length; i++) {
-            let article = articles[i];
-
-            let objectid = article['_id']
-            let countryCode = article['countryCode']
-            let time_unix = article['time']
-            let time = fn_dateTimeToFormatted(time_unix)
-            let url_title = article['url_title']
-            let url = article['url']
-            let url_img = article['url_img']
-            let comment = article['comment']
-            let happy = article['happy']
-
-            if (url == '') {
-              card = make_card(countryCode, time, comment, objectid, happy);
-            } else {
-              card = make_card_url(countryCode, time, comment, url_img, url_title, url, objectid, happy);
-            }
-
-            $('#card-box').append(card)
-          }
-        }
-      });
-    }
-
-    function show_new(countryCode) {
-      $('#card-box').empty()
-
-      $.ajax({
-        type: "GET",
-        url: `/api/${countryCode}/new`,
-        data: {},
-        success: function (response) {
-          let articles = response['articles_list']
-          for (let i = 0; i < articles.length; i++) {
-            let article = articles[i];
-
-            let objectid = article['_id']
-            let countryCode = article['countryCode']
-            let time_unix = article['time']
-            let time = fn_dateTimeToFormatted(time_unix)
-            let url_title = article['url_title']
-            let url = article['url']
-            let url_img = article['url_img']
-            let comment = article['comment']
-            let happy = article['happy']
-
-            if (url == '') {
-              card = make_card(countryCode, time, comment, objectid, happy);
-            } else {
-              card = make_card_url(countryCode, time, comment, url_img, url_title, url, objectid, happy);
-            }
-
-            $('#card-box').append(card)
-          }
-        }
-      });
-    }
   </script>
 </head>
 
@@ -127,41 +29,17 @@
   <button onclick="show_top('{{isoCode}}')">추천순</button>
   <button onclick="show_new('{{isoCode}}')">최신순</button>
 
-  <div class="posting-box">
-    <select name='countryCode' id="countryCode">
+  <div class="posting_box">
+    <select name='country_code' id="countryCode">
       <option value='aa'>World</option>
       <option value='us'>United States</option>
       <option value='kr'>South Korea</option>
     </select>
-    <textarea rows="5" placeholder="Enter comment" id="posting-comment"></textarea>
+    <textarea rows="5" placeholder="What's happening?" id="postingBody"></textarea>
     <button id="postBtn" onclick="posting()">저장</button>
   </div>
 
-  <div class="card-list" id="card-box">
-    <div class="card">
-      <div>
-        <a href="#">${countryCode}</a>
-        <p>${time}</p>
-        <p>${comment}</p>
-      </div>
-
-      <div class="thumbnail_box">
-        <div class="thumbnail_image">
-          <img src="#" alt="thumbnail image" />
-        </div>
-        <a href="#" target="_blank">${url_title}</a>
-      </div>
-
-      <footer class="card-footer">
-        <button onclick="happy('${objectid}')">
-          좋아요 ${happy}
-        </button>
-        <button onclick="delete_card('${objectid}')">
-          삭제
-        </button>
-      </footer>
-    </div>
-  </div>
+  <div id="cardBox"></div>
 </body>
 
 </html>
