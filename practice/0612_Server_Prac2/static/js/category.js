@@ -1,9 +1,9 @@
-function show_top(country_code) {
+function show_top(category_code) {
     $('#cardBox').empty()
 
     $.ajax({
         type: "GET",
-        url: `/api/top/${country_code}`,
+        url: `/api/top/${category_code}`,
         data: {},
         success: function (response) {
             let articles = response['articles_list']
@@ -11,9 +11,9 @@ function show_top(country_code) {
                 let article = articles[i];
 
                 let objectid = article['_id']
-                let country_code = article['country_code']
+                let category_code = article['category_code']
                 let time_unix = article['time']
-                let time = fn_dateTimeToFormatted(time_unix)
+                let time = dateTimeToFormatted(time_unix)
                 let url_title = article['url_title']
                 let url = article['url']
                 let url_img = article['url_img']
@@ -21,9 +21,9 @@ function show_top(country_code) {
                 let happy = article['happy']
 
                 if (url == '') {
-                    card = make_card(country_code, time, post_body, objectid, happy);
+                    card = make_card(category_code, time, post_body, objectid, happy);
                 } else {
-                    card = make_card_url(country_code, time, post_body, url_img, url_title, url, objectid, happy);
+                    card = make_card_url(category_code, time, post_body, url_img, url_title, url, objectid, happy);
                 }
 
                 $('#cardBox').append(card)
@@ -32,12 +32,12 @@ function show_top(country_code) {
     });
 }
 
-function show_new(country_code) {
+function show_new(category_code) {
     $('#cardBox').empty()
 
     $.ajax({
         type: "GET",
-        url: `/api/new/${country_code}`,
+        url: `/api/new/${category_code}`,
         data: {},
         success: function (response) {
             let articles = response['articles_list']
@@ -45,9 +45,9 @@ function show_new(country_code) {
                 let article = articles[i];
 
                 let objectid = article['_id']
-                let country_code = article['country_code']
+                let category_code = article['category_code']
                 let time_unix = article['time']
-                let time = fn_dateTimeToFormatted(time_unix)
+                let time = dateTimeToFormatted(time_unix)
                 let url_title = article['url_title']
                 let url = article['url']
                 let url_img = article['url_img']
@@ -55,9 +55,9 @@ function show_new(country_code) {
                 let happy = article['happy']
 
                 if (url == '') {
-                    card = make_card(country_code, time, post_body, objectid, happy);
+                    card = make_card(category_code, time, post_body, objectid, happy);
                 } else {
-                    card = make_card_url(country_code, time, post_body, url_img, url_title, url, objectid, happy);
+                    card = make_card_url(category_code, time, post_body, url_img, url_title, url, objectid, happy);
                 }
 
                 $('#cardBox').append(card)

@@ -1,4 +1,4 @@
-function fn_dateTimeToFormatted(dt) {
+function dateTimeToFormatted(dt) {
   var min = 60 * 1000;
   var c = new Date()
   var d = new Date(dt * 1000);
@@ -24,11 +24,11 @@ function fn_dateTimeToFormatted(dt) {
   return result.formatted;
 };
 
-function make_card(country_code, time, post_body, objectid, happy) {
+function make_card(category_code, time, post_body, objectid, happy) {
   let temp_html =
     `<div class="card">
       <header>
-        <a href="/${country_code}">${country_code}</a>
+        <a href="/${category_code}">${category_code}</a>
         <p>${time}</p>
       </header>
 
@@ -47,7 +47,7 @@ function make_card(country_code, time, post_body, objectid, happy) {
           <div>😊</div>
           <div id="happy_${objectid}">${happy}</div>
         </button>
-        <a href="/${country_code}/${objectid}">
+        <a href="/${category_code}/${objectid}">
           <div>💬</div>
           <div id="happy_${objectid}">${happy}</div>
         </a>
@@ -56,11 +56,11 @@ function make_card(country_code, time, post_body, objectid, happy) {
   return temp_html;
 }
 
-function make_card_url(country_code, time, post_body, url_img, url_title, url, objectid, happy) {
+function make_card_url(category_code, time, post_body, url_img, url_title, url, objectid, happy) {
   let temp_html =
     `<div class="card">
       <header>
-        <a href="/${country_code}">${country_code}</a>
+        <a href="/${category_code}">${category_code}</a>
         <p>${time}</p>
       </header>
 
@@ -85,7 +85,7 @@ function make_card_url(country_code, time, post_body, url_img, url_title, url, o
           <div>😊</div>
           <div id="happy_${objectid}">${happy}</div>
         </button>
-        <a href="/${country_code}/${objectid}">
+        <a href="/${category_code}/${objectid}">
           <div>💬</div>
           <div id="happy_${objectid}">${happy}</div>
         </a>
@@ -96,15 +96,15 @@ function make_card_url(country_code, time, post_body, url_img, url_title, url, o
 
 
 
-function posting() {
+function post_article() {
   let post_body = $('#postingBody').val();
-  let country_code = $('#countryCode').val();
+  let category_code = $('#categoryCode').val();
 
   $.ajax({
     type: "POST",
-    url: "/api/compose",
+    url: "/api/postarticle",
     data: {
-      'country_code_give': country_code, 
+      'category_code_give': category_code, 
       'post_body_give': post_body
     },
     success: function(response) {

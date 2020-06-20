@@ -30,9 +30,9 @@
                     let article = response['article'][0]
 
                     let objectid = article['_id']
-                    let country_code = article['country_code']
+                    let category_code = article['category_code']
                     let time_unix = article['time']
-                    let time = fn_dateTimeToFormatted(time_unix)
+                    let time = dateTimeToFormatted(time_unix)
                     let url_title = article['url_title']
                     let url = article['url']
                     let url_img = article['url_img']
@@ -40,9 +40,9 @@
                     let happy = article['happy']
 
                     if (url == '') {
-                        card = make_card(country_code, time, post_body, objectid, happy);
+                        card = make_card(category_code, time, post_body, objectid, happy);
                     } else {
-                        card = make_card_url(country_code, time, post_body, url_img, url_title, url, objectid, happy);
+                        card = make_card_url(category_code, time, post_body, url_img, url_title, url, objectid, happy);
                     }
 
                     $('#articleBox').append(card)
@@ -50,17 +50,38 @@
                 }
             });
         }
+
+        function post_comment() {
+            let post_comment = $('#postingComment').val();
+            let article_id = '{{articleId}}'
+
+            $.ajax({
+                type: "POST",
+                url: "/api/postcomment",
+                data: {
+                    'article_id_give': article_id,
+                    'post_comment_give': post_comment
+                },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        window.location.reload()
+                    }
+                }
+            })
+        }
     </script>
 </head>
 
 <body>
+    <h1>{{isoCode}}</h1>
+
     <div id="articleBox"></div>
 
     <div class="posting_box">
         <p>Comments</p>
         <div id="commentBox"></div>
         <textarea rows="2" placeholder="Enter comment..." id="postingComment"></textarea>
-        <button id="commentBtn" onclick="comment()">저장</button>
+        <button id="commentBtn" onclick="post_comment()">저장</button>
     </div>
 
     <div>=====================구분선=====================</div>

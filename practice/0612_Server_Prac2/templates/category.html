@@ -21,7 +21,7 @@
 </head>
 
 <body>
-  <h1 class="title">{{isoCode}}</h1>
+  <h1>{{isoCode}}</h1>
 
   <div>
     <a href="/">홈으로</a>
@@ -30,13 +30,13 @@
   <button onclick="show_new('{{isoCode}}')">최신순</button>
 
   <div class="posting_box">
-    <select name='country_code' id="countryCode">
+    <select name='category_code' id="categoryCode">
       <option value='aa'>World</option>
       <option value='us'>United States</option>
       <option value='kr'>South Korea</option>
     </select>
     <textarea rows="5" placeholder="What's happening?" id="postingBody"></textarea>
-    <button id="postBtn" onclick="posting()">저장</button>
+    <button onclick="post_article()">저장</button>
   </div>
 
   <div id="cardBox"></div>

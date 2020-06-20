@@ -51,7 +51,7 @@ def category(isoCode):
 def show_category_top(isoCode):
     articles = list(db.database.aggregate([
         {'$set': {'_id': {'$toString': '$_id'}}},
-        {'$match': {'country_code': isoCode}},
+        {'$match': {'category_code': isoCode}},
         {'$sort': {'happy': -1}}
     ]))
     return jsonify({'result': 'success', 'articles_list': articles})
@@ -60,7 +60,7 @@ def show_category_top(isoCode):
 def show_category_new(isoCode):
     articles = list(db.database.aggregate([
         {'$set': {'_id': {'$toString': '$_id'}}},
-        {'$match': {'country_code': isoCode}},
+        {'$match': {'category_code': isoCode}},
         {'$sort': {'time': -1}}
     ]))
     return jsonify({'result': 'success', 'articles_list': articles})
@@ -94,16 +94,16 @@ def regex_search_group(string, regex):
 
 regex_url = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$\-@\.&+:/?=]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 
-@app.route('/api/compose', methods=['POST'])
-def compose():
+@app.route('/api/postarticle', methods=['POST'])
+def post_article():
 	# 1. 클라이언트로부터 데이터를 받기
-    country_code_receive = request.form['country_code_give']
+    category_code_receive = request.form['category_code_give']
     post_body_receive = request.form['post_body_give']
     url_receive = regex_search_group(post_body_receive, regex_url)
 
     if url_receive == None:
         article = {
-        'country_code': country_code_receive,
+        'category_code': category_code_receive,
         'time': time(),
         'post_body': post_body_receive,
         'url_title': '',
@@ -133,7 +133,7 @@ def compose():
         url_title = url_receive if og_title == None else og_title['content']
 
         article = {
-            'country_code': country_code_receive,
+            'category_code': category_code_receive,
             'time': time(),
             'post_body': post_body_receive,
             'url_title': cleanhtml(url_title),
