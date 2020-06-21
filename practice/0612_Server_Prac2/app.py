@@ -148,7 +148,6 @@ def post_article():
         return jsonify({'result': 'success'})
 
 
-
 @app.route('/api/happy', methods=['POST'])
 def happy():
     objectid_receive = request.form['objectid_give']
